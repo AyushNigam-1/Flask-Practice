@@ -7,5 +7,19 @@
 </head>
 <body>
     your score : {{results}}
+    {% for key,value in results.items() %}
+ <p>{{key}}</p>
+ <p>{{value}}</p>
+ {% endfor %}
+ {% if results['res'] == 'FAIL' %}
+ <h2>You failed</h2>
+ {% endif %}
+
+ <form action="/form" method="post" >
+<input type="text" id="score" name="score">
+<input type="text" id="total" name="total">
+<input type="submit" value="submit">
+ </form>
+    
 </body>
 </html>
