@@ -6,9 +6,18 @@
     <title>Document</title>
 </head>
 <body>
-    <form action="" method="post">
+    {% with msg=get_flashed_messages %}
+{% if msg %}
+{% for n in msg %}
+{{n}}
+{% endfor %}
+{% endif %}
+    {% endwith %}
+    <form  method="post" enctype="multipart/form-data">
+        <input type="file" name="file" id="">
         <label for="">Name:</label>
-        <input type="text" id="name">
+        <input type="text" id="score" name="score">
+        <input type="text" id="name" name="total">
         <input type="submit">
     </form>
 </body>
