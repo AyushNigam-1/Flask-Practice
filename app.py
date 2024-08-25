@@ -1,4 +1,4 @@
-from flask import Flask , render_template , request , redirect , url_for , abort , flash , session
+from flask import Flask , render_template , request , redirect , url_for , abort , flash , session , make_response
 
 app = Flask(__name__)
 app.secret_key = "abc"
@@ -9,14 +9,16 @@ def welcome():
 @app.route('/form',methods=['GET','POST'])
 def form():
     if request.method=='POST':
-        sc = int(request.form['score'])
-        total = int(request.form['total'])
-        f = request.files['file']
-        f.save(f.filename)
-        session['key'] = sc
+        name = int(request.form['Name'])
+        password = int(request.form['Password'])
+        session['key'] = name
         flash("User Data Saved !")
-        return redirect(url_for(f'success',score=sc+total))
-    return render_template('form.html')
+        res = make_response(render_template("form.html"))
+        res.set_cookie("framework",f"{password}")
+        return res
+        # res.set_cookie("Framework","flask")
+        # return redirect(url_for(f'success',score=sc+total))
+    # return render_template('form.html')
 
 @app.route('/success/<int:score>')
 def success(score):
@@ -28,6 +30,11 @@ def success(score):
     exp = {"res":res,"score":score}
 
     return render_template("index.html",results=res)
+
+def get_cookie():
+    name = request.cookie.get("framework")
+    return name
+
 
 if __name__=='__main__':
     app.run(debug=True)

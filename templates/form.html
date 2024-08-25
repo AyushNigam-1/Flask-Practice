@@ -1,24 +1,28 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Document</title>
 </head>
+
 <body>
     {% with msg=get_flashed_messages %}
-{% if msg %}
-{% for n in msg %}
-{{n}}
-{% endfor %}
-{% endif %}
+    {% if msg %}
+    {% for n in msg %}
+    {{n}}
+    {% endfor %}
+    {% endif %}
     {% endwith %}
-    <form  method="post" enctype="multipart/form-data">
+    <form method="post" enctype="multipart/form-data">
         <input type="file" name="file" id="">
         <label for="">Name:</label>
-        <input type="text" id="score" name="score">
-        <input type="text" id="name" name="total">
+        <input type="text" id="Name" name="Name">
+        <label for="">Password:</label>
+        <input type="text" id="Password" name="Password">
         <input type="submit">
     </form>
 </body>
+
 </html>
