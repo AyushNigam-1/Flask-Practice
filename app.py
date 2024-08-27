@@ -52,6 +52,15 @@ def get_cookie():
     name = request.cookie.get("framework")
     return name
 
+def deletepost(id):
+    if "email" in session:
+        user = Blog.query.filter_by(index=id).first()
+        db.session.delete(user)
+        db.session.commit()
+        flask("delete successfully")
+        return redirect("/profile")
+    
+
 
 if __name__=='__main__':
     app.run(debug=True)
