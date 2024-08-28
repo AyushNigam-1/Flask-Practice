@@ -52,6 +52,20 @@ def get_cookie():
     name = request.cookie.get("framework")
     return name
 
+def Blog(db.Model):
+    sno = db.Column(db.integer , primary_key = True),
+    name = db.Column(db.String(80),unique=True,nullable=False),
+    blogcontent = db.Column(db.String(80),unique=True,nullable=False)
+    title = db.Column(db.String(256))
+
+def profile():
+    if('email' in session):
+        posts = Blog.query.filter_by(email = session['email'])
+        return render_template('profile.html' , account = posts)
+    else:
+        return render_template("login.html")
+    
+
 def deletepost(id):
     if "email" in session:
         user = Blog.query.filter_by(index=id).first()
