@@ -23,3 +23,29 @@ def index():
 
 if __name__ == '__main__':
     app.run(debug= True)
+
+
+def editpost():
+    if('email' in session):
+        Blog.query.filter_by(index=id).first()
+        return render_template('editpost.html',username=session['email'],account=user)
+    else:
+        return render_template('login.html')
+    
+app.route("/updatepost/<int:id>",methods=['POST'])
+def updatepost(id):
+    if ("email" in session):
+        if request.method == 'POST':
+            user = Blog.query.filter_by(index=id).first()
+            user.title=request.form['title']
+            user.blogcontent= request.form['blogdata']
+            db.session.add(user)
+            db.session.commit()
+            flash("updated successfully")
+            return redirect("/profile")
+        else:
+            flash("updated successfully")
+            return redirect("/profile")
+    else:
+        return render_template('login_html')
+
