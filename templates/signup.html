@@ -1,0 +1,13 @@
+{% extends 'base.html' %}
+
+{% block header %}
+  <h1>{% block title %}Log In{% endblock %}</h1>
+{% endblock %}
+
+{% block content %}
+<div>
+    {% if error != '' %}
+    <div> error </div>
+    {%end if}
+</div>
+{% endblock %}
