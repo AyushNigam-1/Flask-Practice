@@ -5,10 +5,37 @@ import json
 import time
 import re
 from hashlib import sha256
+from utils import get_random_string
 app = Flask(__name__)
 app.secret_key  = b'kjsdfjbdf/sjdnf'
 app.config['MONGO_URI'] = config['mongo_url']
 mongo = PyMongo(app)
+
+@app.route("/logout")
+def logout_user():
+    session.pop("userToken",None)
+    session['signupSuccess'] = 'You are now logged out.'
+    return redirect("/login")
+
+@app.route("/")
+def show_index():
+    if not 'userToken' in session:
+        session['error'] = "You must login to access this page"
+        return redirect('/login')
+    token_document = mongo.db.user_tokens.find_one({
+        'sessionHash':session['userToken'],
+    })
+    
+    if token_document is None:
+        session.pop("userToken",None)
+        session['error'] = 'You must login again to access this page'
+        return redirect("/login")
+    
+    print('Inside secure dashboard function')
+    print(session['userToken'])
+    
+    return 'This is my secure home page'
+
 
 @app.route("/login")
 def show_login():
@@ -37,8 +64,32 @@ def check_login():
     if not len(email)>0:
         session['error'] = 'Email is required'
         return redirect('/login')
+    
+    if not len(password) >0:
+        session['error'] = 'Password is required'
+        return redirect('/login')
+    
+    user_document = mongo.db.users.find_one({"email":email})
+    if user_document is None:
+        session['error'] = 'No account exists with this email address'
+        return redirect('login')
+    
+    password_hash = sha256(password.encode('utf-8')).hexdigest()
+    if password != password_hash:
+        session['error'] = 'Invalid password'
+        return redirect('/login')
+    
+    random_string = get_random_string()
+    randomSessionHash = sha256(random_string.encode('utf-8')).hexdigest()
+    result = mongo.db.users.insert_one({
+            'userId':user_document['_id'],
+            'sessionHash':randomSessionHash,
+            'createdAt':time.time(),
+        })
+    session['userToken'] = randomSessionHash
 
-    user_documents = mongo.db.users.find({"email":email})
+    return redirect('/')
+
 # @app.route("/")
 # def hello_world():
 #     teach = mongo.db.teachers.find()
